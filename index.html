@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tuning Club Online — Новости</title>
+  <style>
+    body {
+      background-color: #111;
+      font-family: Arial, sans-serif;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #222;
+      padding: 20px;
+      text-align: center;
+      color: #0f0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #1a1a1a;
+      border-radius: 10px;
+    }
+
+    h2 {
+      color: #0f0;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    input, textarea {
+      background-color: #333;
+      color: #fff;
+    }
+
+    button {
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .post {
+      background-color: #222;
+      padding: 15px;
+      margin-top: 15px;
+      border-left: 4px solid #0f0;
+      border-radius: 5px;
+    }
+
+    .post h3 {
+      margin-top: 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      color: #777;
+      border-top: 1px solid #333;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Tuning Club Online — Новости</h1>
+  </header>
+
+  <div class="container">
+    <div id="loginSection">
+      <h2>Авторизация администратора</h2>
+      <input type="password" id="passwordInput" placeholder="Введите пароль..." />
+      <button onclick="checkPassword()">Войти</button>
+    </div>
+
+    <div id="editor" class="hidden">
+      <h2>Добавить новость</h2>
+      <input type="text" id="titleInput" placeholder="Заголовок" />
+      <textarea id="contentInput" placeholder="Текст новости..." rows="5"></textarea>
+      <button onclick="addPost()">Опубликовать</button>
+    </div>
+
+    <div id="posts">
+      <h2>Последние новости</h2>
+      <!-- Новости будут отображены здесь -->
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Tuning Club Online Fan Site. Сделано фанатами.
+  </footer>
+
+  <script>
+    const adminPassword = "12345"; // ← Установи свой пароль
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === adminPassword) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("editor").classList.remove("hidden");
+      } else {
+        alert("Неверный пароль!");
+      }
+    }
+
+    function addPost() {
+      const title = document.getElementById("titleInput").value.trim();
+      const content = document.getElementById("contentInput").value.trim();
+
+      if (!title || !content) {
+        alert("Пожалуйста, заполните все поля!");
+        return;
+      }
+
+      const post = { title, content, date: new Date().toLocaleString() };
+      const posts = JSON.parse(localStorage.getItem("newsPosts") || "[]");
+      posts.unshift(post);
+      localStorage.setItem("newsPosts", JSON.stringify(posts));
+
+      renderPosts();
+      document.getElementById("titleInput").value = "";
+      document.getElementById("contentInput").value = "";
+    }
+
+    function renderPosts() {
+      const postsContainer = document.getElementById("posts");
+      const posts = JSON.parse(localStorage.getItem("newsPosts") || "[]");
+
+      const html = posts.map(post => `
+        <div class="post">
+          <h3>${post.title}</h3>
+          <p>${post.content}</p>
+          <small>${post.date}</small>
+        </div>
+      `).join("");
+
+      postsContainer.innerHTML = "<h2>Последние новости</h2>" + html;
+    }
+
+    renderPosts(); // Загружаем новости при запуске страницы
+  </script>
+
+</body>
+</html>
